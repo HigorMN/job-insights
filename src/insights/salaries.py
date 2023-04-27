@@ -48,6 +48,30 @@ def get_min_salary(path: str) -> int:
     return min(min_salary)
 
 
+def validate_salary_type(salary):
+    if not isinstance(salary, (int, str)):
+        raise ValueError("O salário deve ser um número inteiro ou uma string")
+
+
+def validate_salary_range(job):
+    if "min_salary" not in job or "max_salary" not in job:
+        raise ValueError("min_salary ou max_salary não existe")
+
+    if (
+        type(job["max_salary"]) != int
+        and type(job["max_salary"]) != str
+        or type(job["min_salary"]) != int
+        and type(job["min_salary"]) != str
+    ):
+        raise ValueError("min_salary ou max_salary não é um número inteiro")
+
+    if job["min_salary"] is None or job["max_salary"] is None:
+        raise ValueError("max_salary ou min_salary não pode ser None")
+
+    if int(job["min_salary"]) > int(job["max_salary"]):
+        raise ValueError("min_salary é maior que max_salary")
+
+
 def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
     """Checks if a given salary is in the salary range of a given job
 
@@ -72,25 +96,8 @@ def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
         If `salary` isn't a valid integer
     """
 
-    if "min_salary" not in job or "max_salary" not in job:
-        raise ValueError("min_salary ou max_salary não existe")
-
-    if not isinstance(salary, (int, str)):
-        raise ValueError("O salário deve ser um número inteiro ou uma string")
-
-    if (
-        type(job["max_salary"]) != int
-        and type(job["max_salary"]) != str
-        or type(job["min_salary"]) != int
-        and type(job["min_salary"]) != str
-    ):
-        raise ValueError("min_salary ou max_salary não é um número inteiro")
-
-    if job["min_salary"] is None or job["max_salary"] is None:
-        raise ValueError("max_salary ou min_salary não pode ser None")
-
-    if int(job["min_salary"]) > int(job["max_salary"]):
-        raise ValueError("min_salary é maior que max_salary")
+    validate_salary_type(salary)
+    validate_salary_range(job)
 
     return int(job["min_salary"]) <= int(salary) <= int(job["max_salary"])
 
